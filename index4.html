@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Socket.IO chat</title>
+    </head>
+    <body>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io();
+        </script>
+        <script>
+            $(function(){
+                var socket = io();
+
+                $('form').submit(function(e){
+                    //prevents page reloading
+                    e.preventDefault();
+
+                    // 'chat message'라는 이벤트 발생 , 뒤에는 input id가 m의 값을 가져와 보낸다.
+                    socket.emit('chat message',$('#m').val());
+
+                    // 보내고 메시지 초기화
+                    $('#m').val('')
+
+                    return false;
+                });
+                // chat message 받기
+                socket.on('chat message', function(msg){
+                    var tag = "<li>" + msg + "</li>";
+                    $('#messages').append(tag);
+                });
+            });
+        </script>
+        <div class="chat">
+            <ul id="messages"></ul>
+            <form action="">
+                <input type="text" id="m" autocomplete="off" placeholder="입력해주세요 :D" /><button>전송</button>
+            </form>
+        </div>
+    </body>
+</html>

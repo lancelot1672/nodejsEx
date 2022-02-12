@@ -1,0 +1,38 @@
+<!DOCTYPE html> 
+<html lang="ko"> 
+<head> 
+	<meta charset="UTF-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+	<title>chat-app</title> 
+</head> 
+<body> 
+	<div id="info"></div>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script> 
+	<script src="/socket.io/socket.io.js"></script>
+	<textarea rows="20" cols="30" id="chat"></textarea><br>
+	<input type="text" id="user"><input type="button" value="msg submit" onclick="myOnClick()">
+
+	<script>
+		var socket = io();
+			socket.on('connect', function(){
+			console.log('connect');
+			var name = prompt('대화명을 입력해주세요.','');
+			socket.emit('newUserConnect',name);
+		});
+		socket.on('updateMessage', function(data){
+			var infoEl = document.getElementById('info');
+			infoEl.innerHTML = data.message;
+		});
+		socket.on('reqMsg', function(data){
+			console.log(data.comment);
+			$('#chat').append(data.comment);
+
+		});
+		function myOnClick(){
+			socket.emit("reqMsg", {comment : $('#user').val()});
+			$('#user').val('');
+		}
+	</script> 
+</body>
+</html>
